@@ -1,6 +1,8 @@
 package multicast
 
-import "net"
+import (
+	"net"
+)
 
 type (
 	Group struct {
@@ -56,6 +58,9 @@ func (g *Group) Listen() (<-chan *Packet, error) {
 			n, src, err := conn.ReadFromUDP(b)
 			if err != nil {
 				return
+			}
+			if src.String() == g.IPV4Conn.LocalAddr().String() {
+				continue
 			}
 			out <- &Packet{
 				Source:      src,
